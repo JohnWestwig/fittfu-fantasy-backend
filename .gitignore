@@ -1,3 +1,6 @@
+#Config
+mysql_config.js
+
 # Logs
 logs
 *.log
