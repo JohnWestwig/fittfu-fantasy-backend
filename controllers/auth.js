@@ -4,6 +4,7 @@ var jwt = require('jsonwebtoken');
 var jwt_secret = require('../config').jwt.secret;
 
 exports.login = function (req, res) {
+    res.status(400);
     var query = {
         sql: 'SELECT id, password FROM users WHERE email = ?',
         values: [req.body.email]
@@ -11,25 +12,21 @@ exports.login = function (req, res) {
     db.query(query.sql, query.values, function (error, results) {
         if (error) {
             res.json({
-                success: false,
-                message: "Could not authenticate; error unknown"
+                message: "Could not authenticate; " + error
             });
         } else if (results.length == 0) {
             res.json({
-                success: false,
                 message: "Could not authenticate; email not found"
             });
         } else {
             bcrypt.compare(req.body.password, results[0].password, function (error, result) {
                 if (error) {
                     res.json({
-                        success: false,
                         message: "Could not authenticate; password incomparable"
                     });
                 } else {
                     if (result == false) {
                         res.json({
-                            success: false,
                             message: "Could not authenticate; password incorrect"
                         });
                     } else {
@@ -38,8 +35,8 @@ exports.login = function (req, res) {
                         }, jwt_secret, {
                             expiresIn: '24h'
                         });
+                        res.status (200);
                         res.json({
-                            success: true,
                             token: token
                         });
                     }
@@ -50,28 +47,25 @@ exports.login = function (req, res) {
 }
 
 exports.register = function (req, res) {
+    res.status(400);
     bcrypt.hash(req.body.password, 10, function (error, hash) {
         if (error) {
             res.json({
-                success: false,
-                message: "Couldn't generate password hash",
+                message: "Could not register; hash failed",
             });
         } else {
             var query = {
                 sql: 'INSERT INTO users (first_name, last_name, email, password) VALUES (?, ?, ?, ?)',
-                values: [req.body.first_name, req.body.last_name, req.body.email, hash]
+                values: [req.body.firstName, req.body.lastName, req.body.email, hash]
             };
             db.query(query.sql, query.values, function (error, results) {
                 if (error) {
                     res.json({
-                        success: false,
-                        message: "Could not insert user information",
-                        error: error
+                        message: "Could not register;" + error,
                     });
                 } else {
-                    res.json({
-                        success: true
-                    });
+                    res.status(400);
+                    res.send();
                 }
             });
         }
