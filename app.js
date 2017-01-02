@@ -10,7 +10,6 @@ var bodyParser = require('body-parser');
 app.use(bodyParser.json());
 app.use(function (err, req, res, next) {
     if (err instanceof SyntaxError && err.status === 400 && 'body' in err) {
-        console.error('Bad JSON');
         res.status(400)
         res.json({
             message: "JSON not parsable"
