@@ -36,7 +36,7 @@ exports.login = function (req, res) {
                         var token = jwt.sign({
                             id: results[0].id
                         }, jwt_secret, {
-                            expiresIn: '1h'
+                            expiresIn: '24h'
                         });
                         res.json({
                             success: true,

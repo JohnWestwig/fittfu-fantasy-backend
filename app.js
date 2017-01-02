@@ -7,9 +7,7 @@ var config = require('./config');
 
 /* JSON body parser */
 var bodyParser = require('body-parser');
-app.use(bodyParser.urlencoded({
-    extended: true
-}));
+app.use(bodyParser.json());
 
 /* Port setup */
 var port = process.env.PORT || 8000;

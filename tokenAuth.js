@@ -5,11 +5,10 @@ module.exports = function (req, res, next) {
     var token = (req.body && req.body.token) || (req.query && req.query.token) || req.headers['x-token'];
     if (token) {
         jwt.verify(token, jwt_secret, function (error, decoded) {
-            console.log(token);
             if (error) {
                 res.end('Token error; ' + error, 400);
             } else {
-                //req.user_id = decoded.user_id;
+                req.body.user_id = decoded.id;
             }
             next();
         });
