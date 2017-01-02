@@ -1,25 +1,32 @@
 # fittfu-fantasy-backend
 Server for FITTFU Fantasy.  Exposes a RESTful API.  Uses token authorization for most requests.  See docs for details.
+## API Documentation
+Base URL: localhost:8000
+### Users
+#### `POST` /register
+#### `POST` /login
 
-API
+### Leagues
+#### `GET` /api/leagues
+#### `GET` /api/leagues/{id}
+#### `GET` /api/leagues/{id}/teams
+#### `GET` /api/leagues/{id}/weeks
+#### `GET` /api/leagues/{id}/weeks/current
 
-   GET /leagues
-   GET /leagues/{id}
-   GET /leagues/{id}/teams
-   GET /leagues/{id}/weeks
-   GET /leagues/{id}/weeks/current
+### Weeks
+#### `GET` /api/weeks/{id}
+#### `GET` /api/weeks/{id}/games
+#### `GET` /api/weeks/{id}/lineups
+#### `GET` /api/weeks/{id}/lineups/me
 
-   GET /weeks/{id}
-   GET /weeks/{id}/games
-   GET /weeks/{id}/lineups
-   GET /weeks/{id}/lineups/me
+### Games 
+#### `GET` /api/games/{id}
 
-   GET /games/{id}
-
-   GET /lineups/{id}
-   GET /lineups/{id}/players
-   PUT /lineups/{id}/players/{id}
-DELETE /lineups/{id}/players/{id}
+### Lineups
+#### `GET` /api/lineups/{id}
+#### `GET` /api/lineups/{id}/players
+#### `PUT` /api/lineups/{id}/players/{id}
+#### `DELETE` /api/lineups/{id}/players/{id}
 
 
 
