@@ -4,6 +4,20 @@ Server for FITTFU Fantasy.  Exposes a RESTful API.  Uses token authorization for
 Base URL: localhost:8000
 ### Users
 #### `POST` /register
+*Registers a new user*
+
+Parameter | Type   | Required
+:-------: | :----: | :-----:
+firstName | String | **Yes**
+lastName  | String | **Yes**
+email     | String | **Yes**
+password  | String | **Yes**
+
+Status Code | Response
+---------: | :-------
+200         | Success
+400         | Bad things
+
 #### `POST` /login
 
 ### Leagues
