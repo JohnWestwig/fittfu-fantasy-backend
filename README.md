@@ -40,7 +40,9 @@ Code  | Response       | Error
 
 ### Leagues
 #### `GET` /api/leagues
+#### `GET` /api/leagues/me
 #### `GET` /api/leagues/{id}
+#### `POST`/api/leagues/{id}/join
 #### `GET` /api/leagues/{id}/teams
 #### `GET` /api/leagues/{id}/weeks
 #### `GET` /api/leagues/{id}/weeks/current
