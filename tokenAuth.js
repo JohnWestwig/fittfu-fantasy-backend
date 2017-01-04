@@ -9,8 +9,8 @@ module.exports = function (req, res, next) {
                 res.end('Token error; ' + error, 400);
             } else {
                 req.body.user_id = decoded.id;
+                next();
             }
-            next();
         });
     } else {
         res.end('No token provided', 400);

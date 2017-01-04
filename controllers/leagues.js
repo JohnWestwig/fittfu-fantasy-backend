@@ -3,7 +3,11 @@ var db = require('../db').connect();
 exports.getAll = function(req, res) {
     //TODO only select active leagues
     var query = {
-        sql: "SELECT leagues.id, leagues.name, leagues.image FROM leagues",
+        sql: "SELECT leagues.id, leagues.name, leagues.image, COUNT(DISTINCT lineups.user_id) AS lineup_count " +
+             "FROM leagues " + 
+             "JOIN weeks ON weeks.league_id = leagues.id " +
+             "JOIN lineups ON lineups.week_id = weeks.id " +
+             "GROUP BY leagues.id",
         values: []
     }
     db.query(query.sql, query.values, function(error, results) {
@@ -40,7 +44,13 @@ exports.join = function(req, res) {
 
 exports.getMine = function (req, res) {
     var query = {
-        sql: "SELECT DISTINCT leagues.id, leagues.name, leagues.image FROM lineups JOIN weeks ON lineups.week_id = weeks.id JOIN leagues ON leagues.id = weeks.league_id WHERE lineups.user_id = ?",
+        sql: "SELECT leagues.id, leagues.name, leagues.image, COUNT(DISTINCT lineups.user_id) AS lineup_count " +
+             "FROM leagues " + 
+             "JOIN weeks ON weeks.league_id = leagues.id " +
+             "JOIN lineups ON lineups.week_id = weeks.id " +
+             "WHERE leagues.id " +
+             "IN (SELECT leagues.id FROM leagues JOIN weeks ON weeks.league_id = leagues.id JOIN lineups ON lineups.user_id = ? AND lineups.week_id = weeks.id GROUP BY leagues.id) " +
+             "GROUP BY leagues.id",
         values: [req.body.user_id]
     }
 
