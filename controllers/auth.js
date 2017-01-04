@@ -4,30 +4,33 @@ var jwt = require('jsonwebtoken');
 var jwt_secret = require('../config').jwt.secret;
 
 exports.login = function (req, res) {
-    res.status(400);
     var query = {
         sql: 'SELECT id, password FROM users WHERE email = ?',
         values: [req.body.email]
     }
     db.query(query.sql, query.values, function (error, results) {
         if (error) {
-            res.json({
-                message: "Could not authenticate; " + error
+            res.status(400).json({
+                message: "Could not authenticate; " + error,
+                errorCode: 1
             });
         } else if (results.length == 0) {
-            res.json({
-                message: "Could not authenticate; email not found"
+            res.status(400).json({
+                message: "Could not authenticate; email not found",
+                errorCode: 2
             });
         } else {
             bcrypt.compare(req.body.password, results[0].password, function (error, result) {
                 if (error) {
-                    res.json({
-                        message: "Could not authenticate; password incomparable"
+                    res.status(400).json({
+                        message: "Could not authenticate; password incomparable",
+                        errorCode: 3
                     });
                 } else {
                     if (result == false) {
-                        res.json({
-                            message: "Could not authenticate; password incorrect"
+                        res.status(400).json({
+                            message: "Could not authenticate; password incorrect",
+                            errorCode: 4
                         });
                     } else {
                         var token = jwt.sign({
@@ -35,8 +38,7 @@ exports.login = function (req, res) {
                         }, jwt_secret, {
                             expiresIn: '24h'
                         });
-                        res.status (200);
-                        res.json({
+                        res.status(200).json({
                             token: token
                         });
                     }
@@ -52,6 +54,7 @@ exports.register = function (req, res) {
         if (error) {
             res.json({
                 message: "Could not register; hash failed",
+                errorCode: 1
             });
         } else {
             var query = {
@@ -62,10 +65,10 @@ exports.register = function (req, res) {
                 if (error) {
                     res.json({
                         message: "Could not register;" + error,
+                        errorCode: 2
                     });
                 } else {
-                    res.status(400);
-                    res.send();
+                    res.status(200).send();
                 }
             });
         }

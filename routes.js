@@ -26,11 +26,11 @@ exports.init = function (app) {
     
     /* Token verification */
     app.get('/api/validate', function(req, res) {
-        res.json({
-            success: true
-        });
+        res.status(200).send();
     });
     /* Leagues */
+    app.get('/api/leagues', leagues.getAll);
+    app.post('/api/leagues/:league_id/join', leagues.join);
     app.get('/api/leagues/me', leagues.getMine);
     app.get('/api/leagues/:league_id/weeks/current', leagues.getCurrentWeek);
     

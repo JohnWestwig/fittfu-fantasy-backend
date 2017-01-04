@@ -2,7 +2,7 @@ var db = require('../db').connect();
 
 exports.getAll = function (req, res) {
     var query = {
-        sql: "SELECT lineups.id, lineups.name, lineups.money_total, SUM(players.price) AS money_spent FROM lineups JOIN lineup_memberships ON lineup_memberships.lineup_id = lineups.id JOIN players ON players.id = lineup_memberships.player_id WHERE user_id = ?",
+        sql: "SELECT lineups.id, lineups.name, lineups.money_total, COALESCE(SUM(players.price), 0) AS money_spent FROM lineups JOIN lineup_memberships ON lineup_memberships.lineup_id = lineups.id JOIN players ON players.id = lineup_memberships.player_id WHERE user_id = ?",
         values: [req.body.user_id]
     }
 
@@ -23,7 +23,7 @@ exports.getAll = function (req, res) {
 
 exports.get = function (req, res) {
     var query = {
-        sql: "SELECT lineups.id, lineups.name, lineups.money_total, SUM(players.price) AS money_spent FROM lineups JOIN lineup_memberships ON lineup_memberships.lineup_id = lineups.id JOIN players ON players.id = lineup_memberships.player_id WHERE user_id = ? AND lineups.id = ?",
+        sql: "SELECT lineups.id, lineups.name, lineups.money_total, COALESCE(SUM(players.price), 0) AS money_spent FROM lineups JOIN lineup_memberships ON lineup_memberships.lineup_id = lineups.id JOIN players ON players.id = lineup_memberships.player_id WHERE user_id = ? AND lineups.id = ?",
         values: [req.body.user_id, req.params.lineup_id]
     }
 
@@ -45,7 +45,7 @@ exports.get = function (req, res) {
 exports.getAllPlayers = function (req, res) {
     var lineup_id = req.params.lineup_id;
     var query = {
-        sql: "SELECT players.id, players.first_name, players.last_name, players.price, players.image, players.year, players.nickname, IF(lineup_memberships.id IS NULL, 0, 1) AS owned FROM lineups JOIN players LEFT JOIN lineup_memberships ON lineup_memberships.lineup_id = 1 AND players.id = lineup_memberships.player_id ORDER BY owned DESC, price DESC, last_name ASC, first_name ASC",
+        sql: "SELECT players.id, players.first_name, players.last_name, players.price, players.image, players.year, players.nickname, IF(lineup_memberships.id IS NULL, 0, 1) AS owned FROM lineups JOIN players LEFT JOIN lineup_memberships ON lineup_memberships.lineup_id = lineups.id AND players.id = lineup_memberships.player_id WHERE lineups.id = ? ORDER BY owned DESC, price DESC, last_name ASC, first_name ASC",
         values: [lineup_id]
     };
 
