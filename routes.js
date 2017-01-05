@@ -2,7 +2,8 @@ var tokenAuth = require('./tokenAuth'),
     auth      = require('./controllers/auth'),
     lineups   = require('./controllers/lineups'),
     leagues   = require('./controllers/leagues'),
-    weeks     = require('./controllers/weeks');
+    weeks     = require('./controllers/weeks'),
+    players   = require('./controllers/players');
 
 exports.init = function (app) {
     app.get('/', function (req, res) {
@@ -25,7 +26,7 @@ exports.init = function (app) {
     app.all('/api/*', [tokenAuth]);
     
     /* Token verification */
-    app.get('/api/validate', function(req, res) {
+    app.get('/api/validateToken', function(req, res) {
         res.status(200).send();
     });
     /* Leagues */
@@ -43,5 +44,9 @@ exports.init = function (app) {
     app.get('/api/lineups/:lineup_id/players', lineups.getAllPlayers);
     app.delete('/api/lineups/:lineup_id/players/:player_id', lineups.removePlayer);
     app.post('/api/lineups/:lineup_id/players/:player_id', lineups.addPlayer);
+    
+    /* Players */
+    app.get('/api/players/:player_id', players.get);
+    app.get('/api/players/:player_id/weeklyStats', players.getWeeklyStats);
     
 }
