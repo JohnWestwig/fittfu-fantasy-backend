@@ -10,27 +10,27 @@ exports.login = function (req, res) {
     }
     db.query(query.sql, query.values, function (error, results) {
         if (error) {
-            res.status(400).json({
-                message: "Could not authenticate; " + error,
-                errorCode: 1
+            res.status(500).json({
+                message: "Could not authenticate; server error",
+                errorCode: 1000
             });
         } else if (results.length == 0) {
             res.status(400).json({
                 message: "Could not authenticate; email not found",
-                errorCode: 2
+                errorCode: 1001
             });
         } else {
             bcrypt.compare(req.body.password, results[0].password, function (error, result) {
                 if (error) {
-                    res.status(400).json({
-                        message: "Could not authenticate; password incomparable",
-                        errorCode: 3
+                    res.status(500).json({
+                        message: "Could not authenticate; server error",
+                        errorCode: 1002
                     });
                 } else {
                     if (result == false) {
                         res.status(400).json({
                             message: "Could not authenticate; password incorrect",
-                            errorCode: 4
+                            errorCode: 1003
                         });
                     } else {
                         var token = jwt.sign({

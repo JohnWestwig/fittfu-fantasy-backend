@@ -6,41 +6,15 @@ Server for FITTFU Fantasy.  Exposes a RESTful API.  Uses token authorization for
 * Requests to api/* **must** include x-token={token} in the request header.  A missing or invalid token will result in a 400 error.
 
 ### Users
-#### `POST` /register
-*Registers a new user.*
-
-Parameter | Type   | Required
-:-------: | :----: | :-----:
-firstName | String | Yes
-lastName  | String | Yes
-email     | String | Yes
-password  | String | Yes
-
-Code  | Response       | Error
-:---: | :------------: | :----:
-200   | None           | None
-400   | {message}      | Hash failure
-400   | {message}      | Unknown
+#### [`POST` /register](#register)
 
 #### `POST` /login
-*Obtains a token.  The token is valid for 24 hours.*
-
-Parameter | Type   | Required
-:-------: | :----: | :-----:
-email     | String | Yes
-password  | String | Yes
-
-Code  | Response       | Error
-:---: | :------------: | :----:
-200   | {token}        | None
-400   | {message}      | Password incomparable
-400   | {message}      | Password incorrect
-400   | {message}      | Email not found
-400   | {message}      | Unknown
 
 ### Leagues
+
 #### `GET` /api/leagues
-#### `GET` /api/leagues/me
+
+
 #### `GET` /api/leagues/{id}
 #### `POST`/api/leagues/{id}/join
 #### `GET` /api/leagues/{id}/teams

@@ -15,12 +15,6 @@ exports.init = function (app) {
     /* Auth */
     app.post('/login', auth.login);
     app.post('/register', auth.register);
-    app.get('/test', function(req, res) {
-        res.json({
-            success: true,
-            message: "Test API call"
-        });
-    });
 
     /* Token auth on all API routes */
     app.all('/api/*', [tokenAuth]);
@@ -30,9 +24,8 @@ exports.init = function (app) {
         res.status(200).send();
     });
     /* Leagues */
-    app.get('/api/leagues', leagues.getAll);
+    app.get('/api/leagues', leagues.all);
     app.post('/api/leagues/:league_id/join', leagues.join);
-    app.get('/api/leagues/me', leagues.getMine);
     app.get('/api/leagues/:league_id/weeks/current', leagues.getCurrentWeek);
     
     /* Weeks */
