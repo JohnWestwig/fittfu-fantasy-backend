@@ -3,34 +3,49 @@ var jwt = require('jsonwebtoken');
 var jwt_secret = require('../config').jwt.secret;
 
 exports.login = function (req, res) {
+    var email = req.body.email,
+        password = req.body.password;
+
+    if (email == undefined || email == "" || password == undefined || password == "") {
+        res.status(400).json({
+            errorCode: 1000,
+            message: "Could not authenticate",
+            description: "Email and password must be provided and non-empty"
+        });
+        return;
+    }
+
     var query = {
         sql: 'SELECT id, password FROM users WHERE email = ?',
-        values: [req.body.email]
+        values: [email]
     }
     db.query(query.sql, query.values, function (error, results) {
         if (error) {
             res.status(500).json({
-                errorCode: 1000,
+                errorCode: 1003,
                 message: "Could not authenticate",
-                description: "Server error",
+                description: "Database error (unknown)",
             });
         } else if (results.length == 0) {
             res.status(400).json({
-                message: "Could not authenticate; email not found",
-                errorCode: 1001
+                errorCode: 1001,
+                message: "Could not authenticate",
+                description: "Email not found"
             });
         } else {
-            bcrypt.compare(req.body.password, results[0].password, function (error, result) {
+            bcrypt.compare(password, results[0].password, function (error, result) {
                 if (error) {
                     res.status(500).json({
-                        message: "Could not authenticate; server error",
-                        errorCode: 1002
+                        errorCode: 1004,
+                        message: "Could not authenticate",
+                        description: "Hash error"
                     });
                 } else {
                     if (result == false) {
                         res.status(400).json({
-                            message: "Could not authenticate; password incorrect",
-                            errorCode: 1003
+                            errorCode: 1002,
+                            message: "Could not authenticate",
+                            description: "Password incorrect"
                         });
                     } else {
                         var token = jwt.sign({
@@ -48,11 +63,6 @@ exports.login = function (req, res) {
     });
 }
 
-/*
- * Registers a new user.
- * 400 error codes: 1000, 1001
- * 500 error codes: 1002, 1003
- */
 exports.register = function (req, res) {
     //Validate fields
     if (req.body.firstName == undefined || req.body.firstName == "" || req.body.lastName == undefined || req.body.lastName == "" ||

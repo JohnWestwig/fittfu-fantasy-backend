@@ -71,7 +71,6 @@ Errors are returned in JSON format along with an appropriate HTTP status code.
 </table>
 
 #### Failure
-
 <table>
     <thead>
         <th>HTTP Code</th>
@@ -145,6 +144,21 @@ Errors are returned in JSON format along with an appropriate HTTP status code.
 </table>
 
 #### Failure
+
+<table>
+    <thead>
+        <th>HTTP Code</th>
+        <th>Error Code</th>
+        <th>Info</th>
+    </thead>
+    <tbody>
+        <tr>
+            <td align='center'>400</td>
+            <td align='center'>1000</td>
+            <td align='center'></td>
+        </tr>
+    </tbody>
+</table>
 
 | HTTP Code | Error Code | Info                  
 | :-------: | :--------: | :---:
