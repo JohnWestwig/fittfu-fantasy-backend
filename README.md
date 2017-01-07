@@ -29,48 +29,120 @@ Errors are returned in JSON format along with an appropriate HTTP status code.
         <th>Validation</th>
     </thead>
     <tbody>
-        <tr><td>email</td><td>Body</td><td>Yes</td><td>Non-empty, email-format</td></tr>
-        <tr><td>password</td><td>Body</td><td>Yes</td><td>Non-empty</td></tr>
-        <tr><td>firstName</td><td>Body</td><td>Yes</td><td>Non-empty</td></tr>
-        <tr><td>lastName</td><td>Body</td><td>Yes</td><td>Non-empty</td></tr>
+        <tr>
+        	<td align='center'>email</td>
+        	<td align='center'>Body</td>
+			<td align='center'>Yes</td>
+			<td align='center'>Non-empty, email-format</td>
+		</tr>
+        <tr>
+			<td align='center'>password</td>
+			<td align='center'>Body</td>
+			<td align='center'>Yes</td>
+			<td align='center'>Non-empty</td>
+		</tr>
+        <tr>
+			<td align='center'>firstName</td>
+			<td align='center'>Body</td>
+			<td align='center'>Yes</td>
+			<td align='center'>Non-empty</td>
+		</tr>
+        <tr>
+			<td align='center'>lastName</td>
+			<td align='center'>Body</td>
+			<td align='center'>Yes</td>
+			<td align='center'>Non-empty</td>
+		</tr>
     </tbody>
 </table>
 
-| Parameter     | Method   | Required? | Validation                |
-| :-----------: | :-------:| :--------:|:------------------------: |
-| email         | Body     | Yes       | Non-empty, e-mail format  |
-| password      | Body     | Yes       | Non-empty                 |
-| firstName     | Body     | Yes       | Non-empty                 |
-| lastName      | Body     | Yes       | Non-empty                 |
-
 #### Success
-| HTTP Code | Data                  
-| :-------: | :---:
-| 200       | ø
+<table>
+    <thead>
+        <th>HTTP Code</th>
+        <th>Data</th>
+    </thead>
+    <tbody>
+        <tr>
+        	<td align='center'>200</td>
+        	<td align='center'>ø</td>
+		</tr>
+    </tbody>
+</table>
 
 #### Failure
 
-| HTTP Code | Error Code | Info                  
-| :-------: | :--------: | :---:
-| 400       | 1000       | Field validation      
-| 400       | 1001       | E-mail already in use
-| 500       | 1002       | Could not hash password       
-| 500       | 1003       | Database error (unknown)   
+<table>
+    <thead>
+        <th>HTTP Code</th>
+        <th>Error Code</th>
+        <th>Info</th>
+    </thead>
+    <tbody>
+        <tr>
+        	<td align='center'>400</td>
+        	<td align='center'>1000</td>
+			<td align='center'>Field validation</td>
+		</tr>
+        <tr>
+			<td align='center'>400</td>
+			<td align='center'>1001</td>
+			<td align='center'>E-mail already in use</td>
+		</tr>
+        <tr>
+			<td align='center'>500</td>
+			<td align='center'>1002</td>
+			<td align='center'>Could not hash password</td>
+		</tr>
+        <tr>
+			<td align='center'>500</td>
+			<td align='center'>1003</td>
+			<td align='center'>Database error (unknown)</td>
+		</tr>
+    </tbody>
+</table>
 
 #### `POST` /login
 *Retrieves an API token for a user.  The token is valid for 24 hours.*
 
-| Parameter     | Method   | Required? | Validation                |
-| :-----------: | :-------:| :--------:|:------------------------: |
-| email         | Body     | Yes       | Non-empty                 |
-| password      | Body     | Yes       | Non-empty                 |
+<table>
+    <thead>
+        <th>Parameter</th>
+        <th>Method</th>
+        <th>Required?</th>
+        <th>Validation</th>
+    </thead>
+    <tbody>
+        <tr>
+        	<td align='center'>email</td>
+        	<td align='center'>Body</td>
+			<td align='center'>Yes</td>
+			<td align='center'>Non-empty, email-format</td>
+		</tr>
+        <tr>
+			<td align='center'>password</td>
+			<td align='center'>Body</td>
+			<td align='center'>Yes</td>
+			<td align='center'>Non-empty</td>
+		</tr>
+    </tbody>
+</table>
 
 #### Success
-| HTTP Code | Data                  
-| :-------: | :---:
-| 200       | ```{
-token: "abcdefghijklmnopqrstuvwxyz"
-}
+<table>
+	<thead>
+	<th>HTTP Code</th>
+	<th>Data</th>
+	</thead>
+	<tbody>
+		<tr>
+		<td align='center'>200</td>
+		<td>
+		<pre>{<br/>    token: "exampleToken"<br/>}</pre>
+		</td>
+		</tr>
+	</tbody>
+</table>
 
 #### Failure
 
