@@ -1,5 +1,3 @@
-var db = require('../db').connect();
-
 exports.getMyLineup = function (req, res) {
     var week_id = req.params.week_id;
     var query = {

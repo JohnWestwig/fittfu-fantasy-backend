@@ -1,5 +1,3 @@
-var db = require('../db').connect();
-
 exports.get = function (req, res) {
     var player_id = req.params.player_id
     var lineup_id = req.query.lineup_id;

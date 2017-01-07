@@ -1,5 +1,3 @@
-var db = require('../db').connect();
-
 exports.all = function (req, res) {
     var user_id = req.body.user_id
 

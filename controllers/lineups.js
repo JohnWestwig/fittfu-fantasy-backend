@@ -1,5 +1,3 @@
-var db = require('../db').connect();
-
 exports.getAll = function (req, res) {
     var query = {
         sql: "SELECT lineups.id, lineups.name, lineups.money_total, COALESCE(SUM(players.price), 0) AS money_spent FROM lineups JOIN lineup_memberships ON lineup_memberships.lineup_id = lineups.id JOIN players ON players.id = lineup_memberships.player_id WHERE user_id = ?",

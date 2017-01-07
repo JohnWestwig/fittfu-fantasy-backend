@@ -20,9 +20,14 @@ app.use(function (err, req, res, next) {
 /* Port setup */
 var port = process.env.PORT || 8000;
 
-/* Register routes */
-var router = require("./routes");
-router.init(app);
+function registerRoutes() {
+    /* Register routes */
+    var router = require("./routes");
+    router.init(app);
+}
+
+/* Global database connection */
+global.db = require('./db').connect(registerRoutes);
 
 /* Start server */
 app.listen(port);

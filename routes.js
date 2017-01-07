@@ -7,10 +7,10 @@ var tokenAuth = require('./tokenAuth'),
 
 exports.init = function (app) {
     app.get('/', function (req, res) {
-        res.send({
+        res.json({
             "message": "Root for FITTFU Fantasy"
         });
-    })
+    });
     
     /* Auth */
     app.post('/login', auth.login);
