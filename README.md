@@ -19,7 +19,7 @@ Errors are returned in JSON format along with an appropriate HTTP status code.
 ## Users
 
 ### `POST` /register
-*Registers a new user.  Email must be of a valid format and not already in use.  All fields must be non-empty*
+*Registers a new user.*
 
 | Parameter     | Method   | Required? | Validation                |
 | :-----------: | :-------:| :--------:|:------------------------: |
