@@ -21,6 +21,21 @@ Errors are returned in JSON format along with an appropriate HTTP status code.
 ### `POST` /register
 *Registers a new user.*
 
+<table>
+    <thead>
+        <th>Parameter</th>
+        <th>Method</th>
+        <th>Required?</th>
+        <th>Validation</th>
+    </thead>
+    <tbody>
+        <tr><td>email</td><td>Body</td><td>Yes</td><td>Non-empty, email-format</td></tr>
+        <tr><td>password</td><td>Body</td><td>Yes</td><td>Non-empty</td></tr>
+        <tr><td>firstName</td><td>Body</td><td>Yes</td><td>Non-empty</td></tr>
+        <tr><td>lastName</td><td>Body</td><td>Yes</td><td>Non-empty</td></tr>
+    </tbody>
+</table>
+
 | Parameter     | Method   | Required? | Validation                |
 | :-----------: | :-------:| :--------:|:------------------------: |
 | email         | Body     | Yes       | Non-empty, e-mail format  |
@@ -43,6 +58,28 @@ Errors are returned in JSON format along with an appropriate HTTP status code.
 | 500       | 1003       | Database error (unknown)   
 
 #### `POST` /login
+*Retrieves an API token for a user.  The token is valid for 24 hours.*
+
+| Parameter     | Method   | Required? | Validation                |
+| :-----------: | :-------:| :--------:|:------------------------: |
+| email         | Body     | Yes       | Non-empty                 |
+| password      | Body     | Yes       | Non-empty                 |
+
+#### Success
+| HTTP Code | Data                  
+| :-------: | :---:
+| 200       | ```{
+token: "abcdefghijklmnopqrstuvwxyz"
+}
+
+#### Failure
+
+| HTTP Code | Error Code | Info                  
+| :-------: | :--------: | :---:
+| 400       | 1000       | Field validation      
+| 400       | 1001       | E-mail already in use
+| 500       | 1002       | Could not hash password       
+| 500       | 1003       | Database error (unknown)   
 
 ### Leagues
 

@@ -11,13 +11,14 @@ exports.all = function (req, res) {
             filter +
             "GROUP BY leagues.id",
         values: [user_id]
-    }
+    };
+    
     db.query(query.sql, query.values, function (error, results) {
         if (error) {
             res.status(500).json({
-                errorCode: 1,
+                errorCode: 1001,
                 message: "Could not fetch leagues",
-                description: error
+                description: "Database error (unknown)"
             });
         } else {
             res.status(200).json({

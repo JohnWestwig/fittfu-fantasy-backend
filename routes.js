@@ -23,6 +23,7 @@ exports.init = function (app) {
     app.get('/api/validateToken', function(req, res) {
         res.status(200).send();
     });
+    
     /* Leagues */
     app.get('/api/leagues', leagues.all);
     app.post('/api/leagues/:league_id/join', leagues.join);
