@@ -1,6 +1,6 @@
-var bcrypt = require('bcrypt');
-var jwt = require('jsonwebtoken');
-var jwt_secret = require('../config').jwt.secret;
+var bcrypt = require('bcrypt'),
+    jwt = require('jsonwebtoken'),
+    jwt_secret = require('../config').jwt.secret;
 
 exports.login = function (req, res) {
     var email = req.body.email,
@@ -62,11 +62,14 @@ exports.login = function (req, res) {
         }
     });
 }
-
 exports.register = function (req, res) {
+    var firstName = req.body.firstName,
+        lastName = req.body.lastName,
+        email = req.body.email,
+        password = req.body.password;
+    
     //Validate fields
-    if (req.body.firstName == undefined || req.body.firstName == "" || req.body.lastName == undefined || req.body.lastName == "" ||
-        req.body.email == undefined || req.body.email == "" || req.body.password == undefined || req.body.password == "") {
+    if (firstName == undefined || firstName == "" || lastName == undefined || lastName == "" || email == undefined || email == "" || password == undefined || password == "") {
         res.status(400).json({
             errorCode: 1000,
             message: "Could not register",
@@ -75,7 +78,7 @@ exports.register = function (req, res) {
         return;
     }
 
-    bcrypt.hash(req.body.password, 10, function (error, hash) {
+    bcrypt.hash(password, 10, function (error, hash) {
         if (error) {
             res.status(500).json({
                 errorCode: 1002,
@@ -85,7 +88,7 @@ exports.register = function (req, res) {
         } else {
             var query = {
                 sql: 'INSERT INTO users (first_name, last_name, email, password) VALUES (?, ?, ?, ?)',
-                values: [req.body.firstName, req.body.lastName, req.body.email, hash]
+                values: [firstName, lastName, email, hash]
             };
             db.query(query.sql, query.values, function (error, results) {
                 if (error) {
@@ -106,7 +109,7 @@ exports.register = function (req, res) {
                             });
                     }
                 } else {
-                    res.status(200).send();
+                    res.status(200).json({});
                 }
             });
         }

@@ -63,62 +63,102 @@ exports.getAllPlayers = function (req, res) {
 }
 
 exports.removePlayer = function (req, res) {
-    var lineup_id = req.params.lineup_id;
-    var player_id = req.params.player_id;
-    var query = {
-        sql: "DELETE FROM lineup_memberships WHERE lineup_id = ? AND player_id = ?",
-        values: [lineup_id, player_id]
-    };
-    db.query(query.sql, query.values, function (error, results) {
+    var lineup_id = req.params.lineup_id,
+        player_id = req.params.player_id;
+
+    var checkEditPeriodQuery = {
+            sql: "SELECT (weeks.edit_start < CURRENT_TIMESTAMP AND weeks.edit_end > CURRENT_TIMESTAMP) AS can_edit FROM lineups JOIN weeks ON lineups.week_id = weeks.id WHERE lineups.id = ?",
+            values: [lineup_id]
+        },
+        insertQuery = {
+            sql: "DELETE FROM lineup_memberships WHERE lineup_id = ? AND player_id = ?",
+            values: [lineup_id, player_id]
+        };
+
+    db.query(checkEditPeriodQuery.sql, checkEditPeriodQuery.values, function (error, results) {
         if (error) {
-            res.json({
-                success: false,
-                message: "Could not delete player; " + error
+            res.status(500).json({
+                errorCode: 1001,
+                message: "Could not remove player",
+                description: "Database error (unknown)"
+            });
+        } else if (!results[0].can_edit) {
+            res.status(400).json({
+                errorCode: 1000,
+                message: "Could not remove player",
+                description: "Cannot edit lineup at this time"
             });
         } else {
-            res.json({
-                success: true
+            db.query(insertQuery.sql, insertQuery.values, function (error, results) {
+                if (error) {
+                    res.status(500).json({
+                        errorCode: 1002,
+                        message: "Could not remove player",
+                        description: "Database error (unknown)"
+                    });
+                } else {
+                    res.status(200).json({});
+                }
             });
         }
     });
 }
 
 exports.addPlayer = function (req, res) {
-    //TODO verify that this purchase does not exceed limit
+    var lineup_id = req.params.lineup_id,
+        player_id = req.params.player_id;
 
-    var lineup_id = req.params.lineup_id;
-    var player_id = req.params.player_id;
+    var checkEditPeriodQuery = {
+            sql: "SELECT (weeks.edit_start < CURRENT_TIMESTAMP AND weeks.edit_end > CURRENT_TIMESTAMP) AS can_edit FROM lineups JOIN weeks ON lineups.week_id = weeks.id WHERE lineups.id = ?",
+            values: [lineup_id]
+        },
+        checkFundsLimitQuery = {
+            sql: "SELECT lineups.money_total, (SUM(players.price) + (SELECT players.price FROM players WHERE players.id = ?)) AS new_total FROM lineups JOIN lineup_memberships ON lineup_memberships.lineup_id = lineups.id JOIN players ON players.id = lineup_memberships.player_id WHERE lineup_id = ?",
+            values: [player_id, lineup_id]
+        },
+        insertQuery = {
+            sql: "INSERT IGNORE INTO lineup_memberships (lineup_id, player_id) VALUES (?, ?)",
+            values: [lineup_id, player_id]
+        };
 
-    var query = {
-        sql: "SELECT lineups.money_total, (SUM(players.price) + (SELECT players.price FROM players WHERE players.id = ?)) AS new_total FROM lineups JOIN lineup_memberships ON lineup_memberships.lineup_id = lineups.id JOIN players ON players.id = lineup_memberships.player_id WHERE lineup_id = ?",
-        values: [player_id, lineup_id]
-    }
-
-    db.query(query.sql, query.values, function (error, results) {
+    db.query(checkEditPeriodQuery.sql, checkEditPeriodQuery.values, function (error, results) {
         if (error) {
-            res.json({
-                success: false,
-                message: "Could not add player; " + error
+            res.status(500).json({
+                errorCode: 1002,
+                message: "Could not add player",
+                description: "Database error (unknown)"
             });
-        } else if (results[0].new_total > results[0].money_total) {
-            res.json({
-                success: false,
-                message: "Could not add player; insufficient funds"
+        } else if (!results[0].can_edit) {
+            res.status(400).json({
+                errorCode: 1000,
+                message: "Could not add player",
+                description: "Cannot edit lineup at this time"
             });
         } else {
-            query = {
-                sql: "INSERT IGNORE INTO lineup_memberships (lineup_id, player_id) VALUES (?, ?)",
-                values: [lineup_id, player_id]
-            };
-            db.query(query.sql, query.values, function (error, results) {
+            db.query(checkFundsLimitQuery.sql, checkFundsLimitQuery.values, function (error, results) {
                 if (error) {
-                    res.json({
-                        success: false,
-                        message: "Could not add player; " + error
+                    res.status(500).json({
+                        errorCode: 1003,
+                        message: "Could not add player",
+                        description: "Database error (unknown)"
+                    });
+                } else if (results[0].new_total > results[0].money_total) {
+                    res.status(400).json({
+                        errorCode: 1001,
+                        message: "Could not add player",
+                        description: "Insufficient funds"
                     });
                 } else {
-                    res.json({
-                        success: true
+                    db.query(insertQuery.sql, insertQuery.values, function (error, results) {
+                        if (error) {
+                            res.status(500).json({
+                                errorCode: 1004,
+                                message: "Could not add player",
+                                description: "Database error (unknown)"
+                            });
+                        } else {
+                            res.status(200).json({});
+                        }
                     });
                 }
             });

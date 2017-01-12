@@ -65,7 +65,7 @@ Errors are returned in JSON format along with an appropriate HTTP status code.
     <tbody>
         <tr>
         	<td align='center'>200</td>
-        	<td align='center'>ø</td>
+        	<td align='center'><pre>{}</pre></td>
 		</tr>
     </tbody>
 </table>
@@ -155,17 +155,30 @@ Errors are returned in JSON format along with an appropriate HTTP status code.
         <tr>
             <td align='center'>400</td>
             <td align='center'>1000</td>
-            <td align='center'></td>
+            <td align='center'>Validation error</td>
+        </tr>
+        <tr>
+            <td align='center'>400</td>
+            <td align='center'>1001</td>
+            <td align='center'>Email not found</td>
+        </tr>
+        <tr>
+            <td align='center'>400</td>
+            <td align='center'>1002</td>
+            <td align='center'>Password incorrect</td>
+        </tr>
+        <tr>
+            <td align='center'>500</td>
+            <td align='center'>1003</td>
+            <td align='center'>Database error (unknown)</td>
+        </tr>
+        <tr>
+            <td align='center'>500</td>
+            <td align='center'>1004</td>
+            <td align='center'>Hash error</td>
         </tr>
     </tbody>
 </table>
-
-| HTTP Code | Error Code | Info                  
-| :-------: | :--------: | :---:
-| 400       | 1000       | Field validation      
-| 400       | 1001       | E-mail already in use
-| 500       | 1002       | Could not hash password       
-| 500       | 1003       | Database error (unknown)   
 
 ### Leagues
 

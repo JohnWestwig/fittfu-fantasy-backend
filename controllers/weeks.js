@@ -6,17 +6,16 @@ exports.getMyLineup = function (req, res) {
     }
 
     db.query(query.sql, query.values, function (error, results) {
-        res.status(400);
         if (error) {
-            res.json({
-                messsage: "Could not fetch lineup; " + error
+            res.status(500).json({
+                errorCode: 1000,
+                messsage: "Could not fetch lineup;",
+                description: "Database error (unknown)"
             });
         } else {
-            res.status(200);
-            res.json({
+            res.status(200).json({
                 lineup: results[0]
             });
         }
     });
 }
-

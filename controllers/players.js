@@ -1,20 +1,20 @@
 exports.get = function (req, res) {
     var player_id = req.params.player_id
     var lineup_id = req.query.lineup_id;
+    var league_id = req.query.league_id;
     
-    var query;
-    if (lineup_id == undefined) {
-        query = {
-            sql: "SELECT players.id, players.first_name, players.last_name, players.price, players.image, players.nickname, players.year FROM players WHERE players.id = ?",
-            values: [player_id]
-        };
-    } else {
-        query = {
-            sql: "SELECT players.id, players.first_name, players.last_name, players.price, players.image, players.nickname, players.year, (IF(lm.id IS NULL, false, true)) AS owned FROM players LEFT JOIN lineup_memberships lm ON lm.player_id = players.id AND lm.lineup_id = ? WHERE players.id = ?",
-            values: [lineup_id, player_id]
-        };
-    }
+    var query = {
+        sql: "SELECT players.id, players.first_name, players.last_name, players.price, players.image, players.nickname, players.year " +
+             ((lineup_id == undefined) ? "" : ", (IF(lm.id IS NULL, false, true)) AS owned ") +
+             "FROM players " + 
+             ((lineup_id == undefined) ? "" : "LEFT JOIN lineup_memberships lm ON lm.player_id = players.id AND lm.lineup_id = ? ") +
+             "WHERE players.id = ?",
+        values: []
+    };
     
+    console.log(query.sql);
+    
+    query.values = (lineup_id == undefined) ? [player_id] : [lineup_id, player_id];
 
     db.query(query.sql, query.values, function (error, results) {
         if (error) {
@@ -34,8 +34,13 @@ exports.getWeeklyStats = function(req, res) {
     var player_id = req.params.player_id;
     var league_id = req.query.league_id;
     var query = {
-        sql: "SELECT weeks.id as week_id, weeks.number as week_number, pp.count, ppc.name, ppc.value FROM player_performances pp JOIN player_performance_categories ppc ON pp.player_performance_category_id = ppc.id JOIN weeks ON weeks.league_id = ? JOIN games ON pp.game_id = games.id AND games.week_id = weeks.id WHERE pp.player_id = ? ORDER BY weeks.number, ppc.value DESC, ppc.name",
-        values: [league_id, player_id]
+        sql: "SELECT weeks.id AS week_id, weeks.number AS week_number, COALESCE(pp.count, 0) AS count, ppc.name, ppc.value FROM weeks " +
+             "LEFT JOIN games ON games.week_id = weeks.id " +
+             "JOIN player_performance_categories ppc " +
+             "LEFT JOIN player_performances pp ON pp.player_performance_category_id = ppc.id AND pp.game_id = games.id AND pp.player_id = ? " +
+             "WHERE weeks.league_id = ?" +
+             "ORDER BY weeks.id, ppc.value DESC, ppc.name",
+        values: [player_id, league_id]
     };
     db.query(query.sql, query.values, function (error, results) {
         if (error) {
