@@ -22,6 +22,10 @@
     "cookie-parser": "^1.4.3",
     "express": "^4.14.0",
     "jsonwebtoken": "^7.2.1",
-    "multer": "^1.2.1"
+    "multer": "^1.2.1",
+    "mysql": "^2.12.0"
+  },
+  "env": {
+    "PYTHON": "/opt/local/bin/python2.7"
   }
 }

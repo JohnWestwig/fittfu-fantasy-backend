@@ -1,4 +1,4 @@
-var bcrypt = require('bcrypt'),
+var bcrypt = require('bcrypt-nodejs'),
     jwt = require('jsonwebtoken'),
     jwt_secret = require('../config').jwt.secret;
 
