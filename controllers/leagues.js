@@ -14,8 +14,8 @@ exports.all = function (req, res) {
     var query = {
         sql: "SELECT leagues.id, leagues.name, leagues.image, COUNT(DISTINCT weeks.id) AS week_count, COUNT(DISTINCT lineups.id) AS lineup_count " +
             "FROM leagues " +
-            "JOIN weeks ON weeks.league_id = leagues.id " +
-            "JOIN lineups ON lineups.week_id = weeks.id " +
+            "LEFT JOIN weeks ON weeks.league_id = leagues.id " +
+            "LEFT JOIN lineups ON lineups.week_id = weeks.id " +
             filter +
             "GROUP BY leagues.id",
         values: [user_id]
@@ -86,7 +86,7 @@ exports.getCurrentWeek = function (req, res) {
     };
     var league_id = req.params.league_id;
     var query = {
-        sql: "SELECT weeks.id, weeks.number, weeks.edit_start, weeks.edit_end, weeks.live_start, weeks.live_end FROM weeks WHERE weeks.league_id = ? AND weeks.edit_start < CURRENT_TIMESTAMP ORDER BY weeks.edit_end ASC LIMIT 1",
+        sql: "SELECT weeks.id, weeks.number, weeks.edit_start, weeks.edit_end, weeks.live_start, weeks.live_end FROM weeks WHERE weeks.league_id = ? AND ((weeks.edit_start < CURRENT_TIMESTAMP AND weeks.live_end > CURRENT_TIMESTAMP) OR (CURRENT_TIMESTAMP < weeks.edit_start)) ORDER BY weeks.edit_start ASC LIMIT 1",
         values: [league_id]
     };
     db.query(query.sql, query.values, function (error, results) {

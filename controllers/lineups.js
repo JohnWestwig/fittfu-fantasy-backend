@@ -46,6 +46,7 @@ exports.getAll = function (req, res) {
 }
 
 exports.getAllPlayers = function (req, res) {
+    //TODO only select players on teams in the current league.
     var error_info = {
         message: "Could not get players",
         errors: {
