@@ -47,7 +47,7 @@ exports.init = function (app) {
     /* Players */
     app.get('/api/players/:player_id', players.get);
     app.get('/api/players/:player_id/weeklyStats', players.getWeeklyStats);
-    
+
     /* Articles */
     app.get('/api/articles/:article_id', articles.get);
 

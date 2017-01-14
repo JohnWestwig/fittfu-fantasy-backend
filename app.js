@@ -5,6 +5,9 @@ var express = require('express');
 var app = express();
 var config = require('./config');
 
+/* Static content */
+app.use(express.static('public'));
+
 /* JSON body parser */
 var bodyParser = require('body-parser');
 app.use(bodyParser.json());
