@@ -1,5 +1,12 @@
-var apiError = require('./api_error');
+var api_error = require('./api_error');
+
 exports.getMyLineup = function (req, res) {
+    var error_info = {
+        message: "Could not get my lineup",
+        errors: {
+            5000: "Database error (unknown)"
+        }
+    }
     var week_id = req.params.week_id;
     var query = {
         sql: "SELECT lineups.id, lineups.week_id, lineups.user_id, lineups.name, lineups.money_total FROM lineups WHERE user_id = ? AND week_id = ?",
@@ -8,11 +15,7 @@ exports.getMyLineup = function (req, res) {
 
     db.query(query.sql, query.values, function (error, results) {
         if (error) {
-            res.status(500).json({
-                errorCode: 1000,
-                messsage: "Could not fetch lineup;",
-                description: "Database error (unknown)"
-            });
+            api_error.send(res, error_info, 5000);
         } else {
             res.status(200).json({
                 lineup: results[0]
@@ -22,15 +25,14 @@ exports.getMyLineup = function (req, res) {
 }
 
 exports.getGames = function (req, res) {
-    var week_id = req.params.week_id;
-    var lineup_id = (req.query.lineup_id == undefined) ? "-1" : req.query.lineup_id;
-
-    var errorInfo = {
+    var error_info = {
         message: "Could not get games",
         errors: {
-            4000: "Databse error (unknown)"
+            5000: "Database error (unknown)"
         }
     };
+    var week_id = req.params.week_id;
+    var lineup_id = (req.query.lineup_id == undefined) ? "-1" : req.query.lineup_id;
     var query = {
         sql: "SELECT games.id AS game_id, games.home_team_id, games.away_team_id, games.time AS game_time, " +
             "teams.id AS team_id, teams.name AS team_name, (teams.id = games.home_team_id) AS is_home_team, " +
@@ -51,12 +53,8 @@ exports.getGames = function (req, res) {
     }
     db.query(query.sql, query.values, function (error, results) {
         if (error) {
-            //apiError.send(res, errorInfo, 4000);
-            res.status(400).json({
-                data: error
-            });
+            api_error.send(res, error_info, 5000);
         } else {
-            //we have some processing to do:
             var games = [];
             var current_game = {}
 

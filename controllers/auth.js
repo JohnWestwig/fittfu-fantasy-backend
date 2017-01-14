@@ -80,8 +80,9 @@ exports.register = function (req, res) {
         api_error.send(res, error_info, 4001);
     }
 
-    bcrypt.hash(password, 10, function (error, hash) {
+    bcrypt.hash(password, null, null, function (error, hash) {
         if (error) {
+            console.log(error, hash);
             api_error.send(res, error_info, 5001);
         } else {
             var query = {
@@ -98,7 +99,7 @@ exports.register = function (req, res) {
                             api_error.send(res, error_info, 5000)
                     }
                 } else {
-                    res.status(200).send();
+                    res.status(200).json({});
                 }
             });
         }
