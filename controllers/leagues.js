@@ -40,7 +40,7 @@ exports.join = function (req, res) {
         }
     };
     var league_id = req.params.league_id;
-    var total_funds = 50;
+    var total_funds = 25;
     var query = {
         sql: "INSERT INTO lineups (lineups.name, lineups.money_total, lineups.user_id, lineups.week_id) SELECT ?, ?, ?, weeks.id FROM weeks WHERE weeks.league_id = ?",
         values: [req.body.lineupName, total_funds, req.body.user_id, league_id]
