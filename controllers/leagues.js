@@ -109,7 +109,8 @@ exports.getArticles = function (req, res) {
     };
     var league_id = req.params.league_id
     var query = {
-        sql: "SELECT articles.id, articles.title, articles.author, articles.date_published, articles.content FROM articles WHERE articles.league_id = ? ORDER BY articles.date_published DESC",
+        sql: "SELECT articles.id, articles.title, articles.author, articles.date_published, DATE_FORMAT(articles.date_published, '%m/%d %H:%i') as date_published_pretty, articles.content FROM articles " + 
+             "WHERE articles.league_id = ? ORDER BY articles.date_published DESC",
         values: [league_id]
     };
     db.query(query.sql, query.values, function (error, results) {

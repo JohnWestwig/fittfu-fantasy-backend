@@ -9,7 +9,7 @@ exports.getMyLineup = function (req, res) {
     }
     var week_id = req.params.week_id;
     var query = {
-        sql: "SELECT lineups.id, lineups.week_id, lineups.user_id, lineups.name, lineups.money_total FROM lineups WHERE user_id = ? AND week_id = ?",
+        sql: "SELECT lineups.id, lineups.week_id, lineups.user_id, lineups.name, lineups.money_total, COALESCE(SUM(players.price), 0) AS money_spent FROM lineups JOIN lineup_memberships lm ON lm.lineup_id = lineups.id JOIN players ON players.id = lm.player_id WHERE user_id = ? AND week_id = ?",
         values: [req.body.user_id, req.params.week_id]
     }
 

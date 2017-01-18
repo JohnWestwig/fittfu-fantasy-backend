@@ -22,7 +22,7 @@ exports.init = function (app) {
 
     /* Token verification */
     app.get('/api/validateToken', function (req, res) {
-        res.status(200).send();
+        res.status(200).json({});
     });
 
     /* Leagues */

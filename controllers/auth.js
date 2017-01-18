@@ -78,11 +78,11 @@ exports.register = function (req, res) {
     
     if (email.match(/\S+@\S+\.\S+/) == null) {
         api_error.send(res, error_info, 4001);
+        return;
     }
 
     bcrypt.hash(password, null, null, function (error, hash) {
         if (error) {
-            console.log(error, hash);
             api_error.send(res, error_info, 5001);
         } else {
             var query = {
@@ -97,6 +97,7 @@ exports.register = function (req, res) {
                             break;
                         default:
                             api_error.send(res, error_info, 5000)
+                            break;
                     }
                 } else {
                     res.status(200).json({});
