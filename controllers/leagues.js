@@ -16,7 +16,7 @@ exports.all = function (req, res) {
             "FROM leagues " +
             "LEFT JOIN weeks ON weeks.league_id = leagues.id " +
             "LEFT JOIN lineups ON lineups.week_id = weeks.id " +
-            + filter +
+            filter +
             "GROUP BY leagues.id",
         values: [user_id]
     };
