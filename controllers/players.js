@@ -17,8 +17,8 @@ exports.get = function (req, res) {
             "teams.name as team_name " +
             "FROM players " +
             ((lineup_id == undefined) ? "" : "LEFT JOIN lineup_memberships lm ON lm.player_id = players.id AND lm.lineup_id = ? ") +
-            "JOIN team_memberships tm ON tm.player_id = players.id " +
-            "JOIN teams ON teams.id = tm.team_id " +
+            "LEFT JOIN team_memberships tm ON tm.player_id = players.id " +
+            "LEFT JOIN teams ON teams.id = tm.team_id " +
             "WHERE players.id = ? LIMIT 1",
         values: []
     };
@@ -49,16 +49,20 @@ exports.getWeeklyStats = function (req, res) {
         sql: "SELECT weeks.id AS week_id, weeks.number AS week_number, COALESCE(pp.count, 0) AS count, ppc.name, ppc.value FROM weeks " +
             "LEFT JOIN games ON games.week_id = weeks.id " +
             "JOIN player_performance_categories ppc " +
-            "LEFT JOIN player_performances pp ON pp.player_performance_category_id = ppc.id AND pp.game_id = games.id AND pp.player_id = ?" +
-            "JOIN teams ON teams.id = games.home_team_id OR teams.id = games.away_team_id " +
-            "JOIN team_memberships tm ON tm.player_id = ? AND tm.team_id = teams.id " +
-            "WHERE weeks.league_id = ?" +
+            "LEFT JOIN player_performances pp ON pp.player_performance_category_id = ppc.id AND pp.game_id = games.id AND pp.player_id = ? " +
+            "LEFT JOIN teams ON teams.id = games.home_team_id OR teams.id = games.away_team_id " +
+            "LEFT JOIN team_memberships tm ON tm.player_id = ? AND tm.team_id = teams.id " +
+            "WHERE weeks.league_id = ? " +
             "ORDER BY weeks.id, ppc.value DESC, ppc.name",
         values: [player_id, player_id, league_id]
     };
     db.query(query.sql, query.values, function (error, results) {
         if (error) {
-            api_error.send(res, error_info, 5000);
+            res.status(500).json({
+                message: error
+            });
+            return;
+            //api_error.send(res, error_info, 5000);
         } else {
             //We have some processing to get this thing into JSON:
             var weeks = [];
