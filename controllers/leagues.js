@@ -10,13 +10,13 @@ exports.all = function (req, res) {
     var user_id = req.body.user_id;
 
     //If "me" is included, filter by leagues in which the user has a lineup"
-    //var filter = (req.query.me == undefined) ? "" : "WHERE leagues.id IN (SELECT leagues.id FROM leagues JOIN weeks ON weeks.league_id = leagues.id JOIN lineups ON lineups.user_id = ? AND lineups.week_id = weeks.id GROUP BY leagues.id) ";
+    var filter = (req.query.me == undefined) ? "" : "WHERE leagues.id IN (SELECT leagues.id FROM leagues JOIN weeks ON weeks.league_id = leagues.id JOIN lineups ON lineups.user_id = ? AND lineups.week_id = weeks.id GROUP BY leagues.id) ";
     var query = {
         sql: "SELECT leagues.id, leagues.name, leagues.image, COUNT(DISTINCT weeks.id) AS week_count, COUNT(DISTINCT lineups.id) AS lineup_count " +
             "FROM leagues " +
             "LEFT JOIN weeks ON weeks.league_id = leagues.id " +
             "LEFT JOIN lineups ON lineups.week_id = weeks.id " +
-            "WHERE leagues.id = 3 " +//filter
+            + filter +
             "GROUP BY leagues.id",
         values: [user_id]
     };
