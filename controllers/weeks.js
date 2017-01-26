@@ -48,7 +48,7 @@ exports.getGames = function (req, res) {
             "LEFT JOIN lineup_memberships lm ON lm.player_id = players.id AND lm.lineup_id = ? " +
             "WHERE week_id = ? " +
             "GROUP BY game_id, team_id, player_id " +
-            "ORDER BY games.time, teams.id = home_team_id DESC, player_points DESC, player_last_name, player_first_name",
+            "ORDER BY games.time, games.id, teams.id = home_team_id DESC, player_points DESC, player_last_name, player_first_name",
         values: [lineup_id, week_id]
     }
     db.query(query.sql, query.values, function (error, results) {

@@ -15,7 +15,7 @@ app.use(function (err, req, res, next) {
     if (err instanceof SyntaxError && err.status === 400 && 'body' in err) {
         res.status(400)
         res.json({
-            message: "JSON not parsable"
+            message: "JSON not parsable, boi"
         });
     }
 });
