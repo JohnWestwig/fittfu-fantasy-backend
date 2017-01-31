@@ -36,6 +36,7 @@ exports.init = function (app) {
     /* Weeks */
     app.get('/api/weeks/:week_id/lineups/me', weeks.getMyLineup);
     app.get('/api/weeks/:week_id/games', weeks.getGames);
+    app.get('/api/weeks/:week_id/stats', weeks.getStats);
 
     /* Lineups */
     app.get('/api/lineups', lineups.getAll);

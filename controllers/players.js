@@ -97,4 +97,6 @@ exports.getWeeklyStats = function (req, res) {
             });
         }
     });
-}
+};
+
+

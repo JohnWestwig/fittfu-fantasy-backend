@@ -113,3 +113,67 @@ exports.getGames = function (req, res) {
         }
     });
 }
+
+exports.getStats = function (req, res) {
+    var error_info = {
+        message: "Could not get stats",
+        errors: {
+            5000: "Database error (unknown)"
+        }
+    };
+    
+    var week_id = req.params.week_id;
+    console.log(week_id);
+    
+    var query = {
+        sql: "SELECT players.id AS player_id, players.first_name AS player_name, COALESCE(pp.count, 0) AS count, ppc.name, ppc.value FROM players " +
+            "LEFT JOIN games ON games.week_id = ? " +
+            "JOIN teams ON teams.id = games.home_team_id OR teams.id = games.away_team_id " +
+            "JOIN team_memberships tm ON tm.player_id = players.id AND tm.team_id = teams.id " +
+            "JOIN player_performance_categories ppc " +
+            "LEFT JOIN player_performances pp ON pp.player_performance_category_id = ppc.id AND pp.game_id = games.id AND pp.player_id = players.id " +
+            "ORDER BY players.id, ppc.value DESC, ppc.name",
+        values: [week_id]
+    };
+    db.query(query.sql, query.values, function (error, results) {
+        if (error) {
+            res.status(500).json({
+                message: error 
+            });
+            //api_error.send(res, error_info, 5000);
+        } else {
+            //We have some processing to get this thing into JSON:
+            var players = [];
+            var stats = {};
+            for (var i = 0; i < results.length; i++) {
+                var row = results[i];
+
+                if (i == 0 || stats.player_id != row.player_id) {
+                    console.log(i);
+                    if (i > 0) {
+                        players.push(stats);
+                    }
+                    stats = {
+                        player_id: row.player_id,
+                        player_name: row.player_name,
+                        point_total: 0,
+                        categories: []
+                    };
+                }
+
+                stats.categories.push({
+                    name: row.name,
+                    count: row.count,
+                    value: row.value
+                });
+                stats.point_total += (row.value * row.count);
+            }
+            if (stats.player_id != undefined) {
+                players.push(stats);
+            }
+            res.status(200).json({
+                stats: players
+            });
+        }
+    });
+};
